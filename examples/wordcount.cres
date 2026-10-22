@@ -1,0 +1,30 @@
+// wordcount.cres — hitung frekuensi kata: map + string tools
+fn wordcount(teks) {
+  let frek = {}
+  for kata in split(lower(teks), " ") {
+    let bersih = trim(kata)
+    if len(bersih) == 0 { continue }
+    if has(frek, bersih) {
+      frek[bersih] = frek[bersih] + 1
+    } else {
+      frek[bersih] = 1
+    }
+  }
+  return frek
+}
+
+let teks = "bulan bersinar di malam hari dan malam itu dingin " +
+           "karena angin malam berembus perlahan"
+
+let frek = wordcount(teks)
+print "frekuensi kata:"
+for k in frek {
+  print "  " + k + " = " + str(frek[k])
+}
+
+// kata paling sering via reduce
+let terbanyak = reduce(keys(frek), fn(best, k) {
+  if frek[k] > frek[best] { return k }
+  return best
+}, keys(frek)[0])
+print "kata terbanyak: " + terbanyak + " (" + str(frek[terbanyak]) + "x)"
