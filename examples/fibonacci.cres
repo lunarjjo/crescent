@@ -1,0 +1,21 @@
+// fibonacci.cres — rekursi + memoization dengan closure
+fn buatFib() {
+  let memo = {}
+
+  fn fib(n) {
+    if n < 2 { return n }
+    if has(memo, n) { return memo[n] }
+    let hasil = fib(n - 1) + fib(n - 2)
+    memo[n] = hasil
+    return hasil
+  }
+
+  return fib
+}
+
+let fib = buatFib()
+
+// tanpa memo ini akan ~1 juta panggilan
+for n in [10, 20, 30, 40, 50] {
+  print "fib(" + str(n) + ") = " + str(fib(n))
+}
