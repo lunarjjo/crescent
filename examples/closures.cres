@@ -1,0 +1,32 @@
+// closures.cres — dunia closure: counter berbagi vs per instansi
+fn buatCounter(nama) {
+  let n = 0
+
+  return fn() {
+    n = n + 1
+    return nama + " ke-" + str(n)
+  }
+}
+
+let a = buatCounter("alpha")
+let b = buatCounter("beta")
+
+print a()   // alpha ke-1
+print a()   // alpha ke-2 — sel milik alpha sendiri
+print b()   // beta ke-1  — sel beta terpisah
+
+// adder: closure menangkap parameter (tetap hidup setelah frame selesai)
+fn buatAdder(x) {
+  return fn(y) { return x + y }
+}
+let tambah10 = buatAdder(10)
+let tambahPesan = buatAdder(1)
+
+print tambah10(5), tambahPesan(5)
+
+// closure per iterasi — seperti JS `let`
+let fns = []
+for i in [1, 2, 3] {
+  push(fns, fn() { return i * 100 })
+}
+print fns[0](), fns[1](), fns[2]()
