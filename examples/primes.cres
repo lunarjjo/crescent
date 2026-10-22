@@ -1,0 +1,30 @@
+// primes.cres — sieve of Eratosthenes dengan array
+fn sieve(batas) {
+  let penanda = []
+  for _ in range(batas + 1) {
+    push(penanda, true)
+  }
+
+  let hasil = []
+  let i = 2
+  while i <= batas {
+    if penanda[i] {
+      push(hasil, i)
+      let j = i * i
+      while j <= batas {
+        penanda[j] = false
+        j = j + i
+      }
+    }
+    i = i + 1
+  }
+  return hasil
+}
+
+let prima = sieve(100)
+print "ada " + str(len(prima)) + " bilangan prima <= 100:"
+print prima
+
+// jumlah dan rata-rata pakai reduce
+let total = reduce(prima, fn(a, x) { return a + x }, 0)
+print "jumlah = " + str(total) + ", rata-rata = " + str(total / len(prima))
