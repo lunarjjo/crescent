@@ -1,0 +1,47 @@
+// agent_memory.cres — "mini luna": bank memori sederhana ala agen
+// dedikasi untuk kasyaira/luna — inspirasi arsitektur 5 bank memori
+
+fn buatMemori() {
+  let semantik = {}    // fakta jangka panjang
+  let episodik = []    // kejadian berurutan
+
+  return {
+    ingat: fn(kunci, nilai) {
+      semantik[kunci] = nilai
+      push(episodik, "ingat: " + kunci)
+      return nil
+    },
+    ambil: fn(kunci) {
+      if has(semantik, kunci) { return semantik[kunci] }
+      return "tidak ada: " + kunci
+    },
+    lupa: fn(kunci) {
+      if has(semantik, kunci) {
+        del(semantik, kunci)
+        push(episodik, "lupa: " + kunci)
+      }
+      return nil
+    },
+    jejak: fn() {
+      return episodik
+    },
+    ringkas: fn() {
+      return str(len(semantik)) + " fakta, " + str(len(episodik)) + " kejadian"
+    }
+  }
+}
+
+let mem = buatMemori()
+
+mem.ingat("pemilik", "kasyaira")
+mem.ingat("misi", "bantu pemilik tanpa diminta")
+mem.ingat("bahasa", "Crescent")
+
+print mem.ringkas()
+print "misi      -> " + mem.ambil("misi")
+print "pemilik   -> " + mem.ambil("pemilik")
+print "tidakada  -> " + mem.ambil("tidakada")
+
+mem.lupa("bahasa")
+print mem.ringkas()
+print "jejak: " + join(mem.jejak(), ", ")
