@@ -1,0 +1,36 @@
+// higher_order.cres — map, filter, reduce, sort dengan closure
+let angka = [5, 3, 8, 1, 9, 2, 7]
+
+let kuadrat = map(angka, fn(x) { return x * x })
+print "kuadrat      :", kuadrat
+
+let genap = filter(angka, fn(x) { return x % 2 == 0 })
+print "genap        :", genap
+
+let total = reduce(angka, fn(a, x) { return a + x }, 0)
+print "total        :", total
+
+let terurut = sort(angka)
+print "terurut naik :", terurut
+
+// komparator kustom: menurun
+let menurun = sort(angka, fn(a, b) { return b - a })
+print "terurut turun:", menurun
+
+// komparator kustom: angka ganjil dulu, lalu menaik
+let ganjilDulu = sort(angka, fn(a, b) {
+  if a % 2 != b % 2 {
+    if a % 2 == 1 { return -1 }
+    return 1
+  }
+  return a - b
+})
+print "ganjil dulu :", ganjilDulu
+
+// pipeline: filter -> map -> reduce dalam satu aliran
+let hasil = reduce(
+  map(filter(angka, fn(x) { return x > 3 }), fn(x) { return x * 10 }),
+  fn(a, x) { return a + x },
+  0
+)
+print "pipeline     :", hasil
