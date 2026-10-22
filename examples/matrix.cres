@@ -1,0 +1,60 @@
+// matrix.cres — perkalian matriks dengan array nested
+fn matriks(a, b) {
+  let n = len(a)
+  let m = len(b[0])
+  let k = len(b)
+
+  let c = []
+  for i in range(n) {
+    let baris = []
+    for j in range(m) {
+      push(baris, 0)
+    }
+    push(c, baris)
+  }
+
+  for i in range(n) {
+    for j in range(m) {
+      let s = 0
+      for t in range(k) {
+        s = s + a[i][t] * b[t][j]
+      }
+      c[i][j] = s
+    }
+  }
+  return c
+}
+
+fn tampil(x) {
+  for baris in x {
+    print baris
+  }
+}
+
+let A = [[1, 2], [3, 4]]
+let B = [[5, 6], [7, 8]]
+
+print "A x B ="
+tampil(matriks(A, B))
+
+let C = [[1, 2, 3], [4, 5, 6]]     // 2x3
+let D = [[7, 8], [9, 10], [11, 12]] // 3x2
+
+print "C x D ="
+tampil(matriks(C, D))
+
+// transpos: baris jadi kolom
+fn transpos(x) {
+  let hasil = []
+  for j in range(len(x[0])) {
+    let kolom = []
+    for i in range(len(x)) {
+      push(kolom, x[i][j])
+    }
+    push(hasil, kolom)
+  }
+  return hasil
+}
+
+print "transpos(B) ="
+tampil(transpos(B))
