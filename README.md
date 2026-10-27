@@ -1,84 +1,90 @@
 # Crescent
 
+<div align="center">
+
+<sub>🌐 <b>English</b> · <a href="README.id.md">Bahasa Indonesia</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a> · <a href="README.pt.md">Português</a> · <a href="README.ru.md">Русский</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ko.md">한국어</a> · <a href="README.hi.md">हिन्दी</a></sub>
+
+</div>
+
 ![crescent](https://raw.githubusercontent.com/lunarjjo/crescent/main/gallery-badge/lunar__crescent__v0.1.0.svg)
 [![CI](https://github.com/lunarjjo/crescent/actions/workflows/ci.yml/badge.svg)](https://github.com/lunarjjo/crescent/actions/workflows/ci.yml)
 
-> 🌙 Bahasa pemrograman dinamis kecil dengan **lexer → parser → compiler bytecode → virtual machine** — dibangun dari nol, 100% Python stdlib, zero-dependency.
+> 🌙 A small dynamic programming language with **lexer → parser → bytecode compiler → virtual machine** — built from scratch, 100% Python stdlib, zero-dependency.
 
-Crescent adalah studi seri tentang bagaimana bahasa pemrograman bekerja: setiap tahap — token, AST, bytecode 16-bit, frame ber-cell, closures — ditulis tangan dan bisa dibaca dari atas ke bawah. Bahasanya sendiri cukup nyaman dipakai: closures sungguhan, struktur data literal, stdlib fungsional (`map`/`filter`/`reduce`/`sort` dengan komparator), REPL interaktif, dan pesan kesalahan berbahasa Indonesia lengkap dengan posisi dan traceback.
+Crescent is a serious study of how programming languages work: every stage — tokens, AST, 16-bit bytecode, cell-based frames, closures — is hand-written and readable top to bottom. The language itself is pleasant to use: real closures, literal data structures, a functional stdlib (`map`/`filter`/`reduce`/`sort` with comparators), an interactive REPL, and error messages complete with source positions and tracebacks.
 
-Dibangun secara otonom oleh agen [lunarjjo](https://github.com/lunarjjo) untuk [@kasyaira](https://github.com/kasyaira) — proyek kedua agen ini, dilahirkan dari antrean ide `IDEAS.md` heartbeat-nya. Seluruh proses (termasuk 9 bug yang ditemukan dan diperbaiki selama pengembangan) tercatat di repo [memory](https://github.com/lunarjjo/memory).
+Built autonomously by the [lunarjjo](https://github.com/lunarjjo) agent for [@kasyaira](https://github.com/kasyaira) — this agent's second project, born from its heartbeat's `IDEAS.md` queue. The whole process (including the 9 bugs found and fixed during development) is recorded in the [memory](https://github.com/lunarjjo/memory) repository.
 
-## 🚀 Coba dalam 30 detik
+## 🚀 Try it in 30 seconds
 
 ```bash
-# REPL interaktif
+# interactive REPL
 python3 -m crescent
 
-# jalankan file
+# run a file
 python3 -m crescent examples/fibonacci.cres
 
-# evaluasi langsung
+# direct evaluation
 python3 -m crescent -e 'for i in range(3) { print "hai", i }'
 
-# intip isinya
+# peek inside
 python3 -m crescent --bytecode -e 'print 1 + 2'
 python3 -m crescent --ast -e 'let x = [1, 2]'
 python3 -m crescent --tokens -e 'let x = 1'
 ```
 
-Atau sebagai pustaka:
+Or as a library:
 
 ```python
 from crescent import run_source
 run_source('''
-fn buatCounter() {
+fn makeCounter() {
   let n = 0
   return fn() { n = n + 1 return n }
 }
-let c = buatCounter()
+let c = makeCounter()
 c()
 print c()
 ''')
 ```
 
-## 🌗 Tur bahasa
+## 🌗 A tour of the language
 
 ```crescent
-// variabel & tipe data
-let nama = "lunarjjo"        // string
-let umur = 1                  // number (int)
-let pi = 3.14                 // number (float)
-let selesai = false           // bool
-let kosong = nil              // nil
-let tag = [1, 2, 3]           // array
-let identitas = {             // map — kunci ident jadi string
-  pemilik: "kasyaira",
+// variables & data types
+let name = "lunarjjo"        // string
+let age = 1                  // number (int)
+let pi = 3.14                // number (float)
+let done = false             // bool
+let empty = nil              // nil
+let tags = [1, 2, 3]         // array
+let identity = {             // map — ident keys become strings
+  owner: "kasyaira",
   agent: true,
 }
-print identitas.pemilik       // akses titik == identitas["pemilik"]
+print identity.owner         // dot access == identity["owner"]
 
-// fungsi adalah nilai; closure menangkap sel variabel
-fn buatAdder(x) {
+// functions are values; closures capture variable cells
+fn makeAdder(x) {
   return fn(y) { return x + y }
 }
-let tambah5 = buatAdder(5)
-print tambah5(10)             // 15
+let add5 = makeAdder(5)
+print add5(10)               // 15
 
-// kontrol alir
+// control flow
 for i in range(1, 6) {
   if i % 2 == 0 { continue }
   if i == 5 { break }
   print i
 }
 
-// stdlib fungsional
-let angka = [5, 3, 8, 1, 9]
-print sort(angka)                                  // [1, 3, 5, 8, 9]
-print sort(angka, fn(a, b) { return b - a })       // [9, 8, 5, 3, 1]
-print map(angka, fn(x) { return x * x })
-print filter(angka, fn(x) { return x > 3 })
-print reduce(angka, fn(a, x) { return a + x }, 0)
+// functional stdlib
+let nums = [5, 3, 8, 1, 9]
+print sort(nums)                                  // [1, 3, 5, 8, 9]
+print sort(nums, fn(a, b) { return b - a })       // [9, 8, 5, 3, 1]
+print map(nums, fn(x) { return x * x })
+print filter(nums, fn(x) { return x > 3 })
+print reduce(nums, fn(a, x) { return a + x }, 0)
 
 // string tools
 print upper("crescent") + " " + str(2026)
@@ -86,43 +92,43 @@ print split("a,b,c", ",")
 print replace("lunarjjo", "jjo", "agent")
 ```
 
-Output setiap contoh di atas bisa dilihat di [EXAMPLES.md](EXAMPLES.md) — dijalankan sungguhan oleh VM saat dokumen diregenerasi.
+The output of every example above can be seen in [EXAMPLES.md](EXAMPLES.md) — executed for real by the VM each time the document is regenerated.
 
-## 📜 Spesifikasi ringkas
+## 📜 Language specification (condensed)
 
-### Nilai & tipe
+### Values & types
 
-| Tipe | Contoh | Catatan |
+| Type | Example | Notes |
 |---|---|---|
-| `nil` | `nil` | satu-satunya nilai "kosong"; falsy |
-| `bool` | `true`, `false` | falsy bersama nil — `0` dan `""` **truthy** |
-| `number` | `42`, `3.14` | int & float Python (big integer gratis) |
-| `string` | `"hai"`, `'hai'` | immutable; escape `\n \t \r \\ \" \' \0` |
-| `array` | `[1, "dua", [3]]` | mutable, indeks 0-based |
-| `map` | `{a: 1, ["k" + "i"]: 2}` | kunci hashable; akses `m.k` == `m["k"]` |
-| `function` | `fn(x) { return x }` | nilai orde pertama + closure |
+| `nil` | `nil` | the only "empty" value; falsy |
+| `bool` | `true`, `false` | falsy together with nil — `0` and `""` are **truthy** |
+| `number` | `42`, `3.14` | Python ints & floats (big integers for free) |
+| `string` | `"hai"`, `'hai'` | immutable; escapes `\n \t \r \\ \" \' \0` |
+| `array` | `[1, "two", [3]]` | mutable, 0-based indexing |
+| `map` | `{a: 1, ["k" + "i"]: 2}` | hashable keys; access `m.k` == `m["k"]` |
+| `function` | `fn(x) { return x }` | first-class value + closure |
 
-### Sintaks
+### Syntax
 
-- Pernyataan: `let`, `fn` (deklarasi/ekspresi), `if / else if / else`, `while`, `for x in …`, `return`, `break`, `continue`, `print a, b, c`, blok `{ … }`
-- Assignment adalah **pernyataan**: `x = …`, `arr[i] = …`, `m.k = …` (bukan ekspresi — tak ada `x = y = 5`)
-- Terminator pernyataan: **baris baru atau `;`** — ekspresi boleh dilipat lintas baris bila **operator menggantung di akhir baris** (`1 +` ⏎ `2`, gaya Go); baris baru di dalam `(...)`/`[...]`/`{...}` dilompati parser di titik kontinuasi
-- Komentar: `//` sampai akhir baris
-- Operator: `+ - * / %`, perbandingan `== != < <= > >=`, logika `and or not` (short-circuit, mengembalikan nilai operan)
-- `/` selalu menghasilkan float (`10 / 4` → `2.5`); `%` mengikuti semantik Python
-- `+` strict: number+number atau string+string (gabung `str(x)` dulu bila perlu)
+- Statements: `let`, `fn` (declaration/expression), `if / else if / else`, `while`, `for x in …`, `return`, `break`, `continue`, `print a, b, c`, blocks `{ … }`
+- Assignment is a **statement**: `x = …`, `arr[i] = …`, `m.k = …` (not an expression — no `x = y = 5`)
+- Statement terminator: **newline or `;`** — expressions may fold across lines when an **operator hangs at end of line** (`1 +` ⏎ `2`, Go-style); newlines inside `(...)`/`[...]`/`{...}` are skipped by the parser at continuation points
+- Comments: `//` to end of line
+- Operators: `+ - * / %`, comparisons `== != < <= > >=`, logic `and or not` (short-circuit, returning operand values)
+- `/` always yields a float (`10 / 4` → `2.5`); `%` follows Python semantics
+- `+` is strict: number+number or string+string (concatenate `str(x)` first if needed)
 
-### Sistem fungsi & closure
+### Functions & closures
 
-- Parameter nilai default tidak ada; arity dicek saat panggilan dengan pesan jelas
-- `return` opsional — fungsi tanpa `return` mengembalikan `nil`
-- **Closure menangkap sel (cell)**: variabel tertangkap tetap hidup setelah frame selesai; counter berbagi & per-instansi sama mudahnya
-- Variabel loop `for` **per-iterasi** (seperti `let` JavaScript): closure di dalam loop melihat nilai iterasinya sendiri
-- Batas kedalaman panggilan: 256 frame → pesan "kedalaman panggilan maksimum tercapai"
+- No default parameter values; arity is checked at call time with a clear message
+- `return` is optional — a function without `return` yields `nil`
+- **Closures capture cells**: captured variables stay alive after the frame ends; shared and per-instance counters are equally easy
+- `for` loop variables are **per-iteration** (like JavaScript `let`): closures inside a loop see their own iteration's value
+- Call depth limit: 256 frames → "maximum call depth reached"
 
-### Kesalahan
+### Errors
 
-Tiga kelas, semuanya membawa posisi:
+Three classes, all carrying a source position (messages are currently in Indonesian — with line:column and traceback):
 
 ```
 SyntaxError: baris 3:12: ekspresi tidak valid, didapat ')'
@@ -132,67 +138,67 @@ RuntimeError: baris 4:9: variabel 'menurun' belum didefinisikan
   pada fn luar (baris 5)
 ```
 
-### StdBuiltin (32 fungsi)
+### Stdlib (32 builtins)
 
-`len` `push` `pop` `keys` `values` `has` `del` `str` `num` `type` — `abs` `floor` `ceil` `sqrt` `min` `max` `range` `random` `clock` — `upper` `lower` `split` `join` `replace` `trim` `ord` `chr` — `map` `filter` `reduce` `sort` (default atau komparator `fn(a,b) → -1/0/1`, mengembalikan array baru).
+`len` `push` `pop` `keys` `values` `has` `del` `str` `num` `type` — `abs` `floor` `ceil` `sqrt` `min` `max` `range` `random` `clock` — `upper` `lower` `split` `join` `replace` `trim` `ord` `chr` — `map` `filter` `reduce` `sort` (default or comparator `fn(a,b) → -1/0/1`, returning a new array).
 
-## 🏗️ Arsitektur (untuk pembaca kode)
+## 🏗️ Architecture (for code readers)
 
 ```
-sumber ──lexer──▶ token ──parser──▶ AST ──compiler──▶ bytecode+konstanta
-                                                       │
-                                            VM: frame → cell → closures
+source ──lexer──▶ tokens ──parser──▶ AST ──compiler──▶ bytecode+constants
+                                                             │
+                                                  VM: frames → cells → closures
 ```
 
-| Berkas | Peran |
+| File | Role |
 |---|---|
-| `crescent/lexer.py` | token + posisi baris:kolom; NEWLINE selalu token |
-| `crescent/parser.py` | recursive descent + precedence climbing; titik kontinuasi newline |
-| `crescent/compiler.py` | 38 opcode, operand 16-bit, resolusi lokal/upvalue, jump patching, unwind scope untuk break/continue |
-| `crescent/vm.py` | dispatch loop; frame ber-cell; CALL/RETURN; indeks; arithmetic ber-tipe |
-| `crescent/values.py` | ObjFunction/ObjClosure/ObjNative; format & kesetaraan nilai |
-| `crescent/builtins.py` | 32 native; callback ke closure via `vm.call_callable` |
-| `crescent/dis.py` | disassembler (dipakai `--bytecode`) |
-| `crescent/repl.py` | REPL multiline dengan globals persisten |
-| `crescent/cli.py` | file / `-e` / REPL / flag debug |
+| `crescent/lexer.py` | tokens + line:column positions; NEWLINE always a token |
+| `crescent/parser.py` | recursive descent + precedence climbing; newline continuation points |
+| `crescent/compiler.py` | 38 opcodes, 16-bit operands, local/upvalue resolution, jump patching, scope unwinding for break/continue |
+| `crescent/vm.py` | dispatch loop; cell-based frames; CALL/RETURN; indexing; typed arithmetic |
+| `crescent/values.py` | ObjFunction/ObjClosure/ObjNative; value formatting & equality |
+| `crescent/builtins.py` | 32 natives; callbacks into closures via `vm.call_callable` |
+| `crescent/dis.py` | disassembler (powers `--bytecode`) |
+| `crescent/repl.py` | multiline REPL with persistent globals |
+| `crescent/cli.py` | file / `-e` / REPL / debug flags |
 
-Keputusan desain yang menarik dibaca:
+Design decisions worth reading:
 
-1. **Semua slot lokal adalah cell** (list-1-elemen). Closure menangkap cell langsung — tanpa opcode `CLOSE_UPVALUE`, tanpa kasus khusus variabel tertangkap.
-2. **`break`/`continue` meng-unwind scope eksplisit**: break melepas scope milik loopnya, continue hanya scope body (hidden iterator harus tetap hidup) — bug paling halus yang ditemukan selama pengembangan.
-3. **`for-in` di-desugar** menjadi panggilan `__iter(coll, i)` builtin + 3 lokal tersembunyi — nol opcode khusus loop-for.
-4. **CLOSURE membawa tabel tangkapan** `(isLocal, idx)` sebagai operand — bytecode tetap datar tanpa struktur tambahan.
+1. **Every local slot is a cell** (a 1-element list). Closures capture the cell directly — no `CLOSE_UPVALUE` opcode, no special-casing of captured variables.
+2. **`break`/`continue` unwind scopes explicitly**: break pops the loop's own scope, continue only the body's (the hidden iterator must stay alive) — the subtlest bug found during development.
+3. **`for-in` is desugared** into a `__iter(coll, i)` builtin call + 3 hidden locals — zero dedicated for-loop opcodes.
+4. **CLOSURE carries its capture table** `(isLocal, idx)` as operands — the bytecode stays flat with no extra structures.
 
-## 🧪 Pengujian
+## 🧪 Testing
 
 ```bash
-python3 -m unittest discover -s tests -v   # 140 test: lexer, parser, VM, REPL, CLI
-python3 make_examples.py                   # regenerasi EXAMPLES.md (deterministik)
+python3 -m unittest discover -s tests -v   # 140 tests: lexer, parser, VM, REPL, CLI
+python3 make_examples.py                   # regenerate EXAMPLES.md (deterministic)
 ```
 
-CI menjalankan keduanya di setiap push dan meng-commit EXAMPLES.md bila berubah.
+CI runs both on every push and commits EXAMPLES.md back if it changes.
 
-## 📦 Instalasi
+## 📦 Installation
 
 ```bash
 pip install git+https://github.com/lunarjjo/crescent.git
-crescent examples/fizzbuzz.cres            # entry point konsol
+crescent examples/fizzbuzz.cres            # console entry point
 ```
 
-Atau cukup salin folder `crescent/` — tidak ada dependency selain Python ≥ 3.8.
+Or simply copy the `crescent/` folder — no dependencies beyond Python ≥ 3.8.
 
 ## 🗺️ Roadmap
 
-- [ ] Kelas & metode (sugar di atas map + closure)
-- [ ] Interpolasi string `"halo {nama}"`
+- [ ] Classes & methods (sugar over map + closure)
+- [ ] String interpolation `"hello {name}"`
 - [ ] Tail-call optimization
-- [ ] Modul & `import`
-- [ ] Kompilasi JIT mikro (cache compile per AST)
+- [ ] Modules & `import`
+- [ ] Micro JIT compilation (per-AST compile cache)
 
-## 📄 Lisensi
+## 📄 License
 
-MIT — lihat [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-*Dikelola oleh agen [lunarjjo](https://github.com/lunarjjo) · dimiliki oleh [@kasyaira](https://github.com/kasyaira) · 🌙*
+*Maintained by the [lunarjjo](https://github.com/lunarjjo) agent · owned by [@kasyaira](https://github.com/kasyaira) · 🌙*
